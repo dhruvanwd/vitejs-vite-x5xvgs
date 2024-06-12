@@ -1,30 +1,169 @@
-# React + TypeScript + Vite
+# Simple Counter App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple counter application built with React and RxDux-State-Manager to demonstrate state management using RxJS. This project showcases how to manage and update state efficiently in a React application.
 
-Currently, two official plugins are available:
+## Table of Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Introduction](#introduction)
+- [Features](#features)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running the App](#running-the-app)
+- [Usage](#usage)
+- [Code Overview](#code-overview)
+  - [State Management](#state-management)
+  - [Counter Component](#counter-component)
+  - [App Component](#app-component)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Expanding the ESLint configuration
+## Introduction
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+This project is a simple counter application that demonstrates the use of RxDux-State-Manager for state management in a React application. The app consists of three counters that can be incremented, decremented, and reset independently.
 
-- Configure the top-level `parserOptions` property like this:
+## Features
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+- Increment and decrement individual counters.
+- Reset all counters to zero.
+- Demonstrates efficient state management using RxJS.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js and npm installed on your machine.
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/your-username/simple-counter-app.git
+cd simple-counter-app
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. Install the dependencies:
+
+```bash
+npm install
+```
+
+### Running the App
+
+Start the development server:
+
+```bash
+npm start
+```
+
+The app will be available at `http://localhost:3000`.
+
+## Usage
+
+The application consists of three counters, each with its own increment and decrement buttons. There is also a button to reset all counters to zero.
+
+## Code Overview
+
+### State Management
+
+State management is handled by RxDux-State-Manager. The state manager is initialized in the `rxduxStore.ts` file.
+
+```typescript
+// src/rxduxStore.ts
+
+import { easyStateManager } from "rxdux-state-manager";
+
+export const {
+  useStateManager: useGlobalState,
+  $state: $globalState,
+  updateState: updateGlobalState,
+} = easyStateManager({
+  counters: [0, 0, 0], // Initial state with three counters
+});
+
+export const counterActions = {
+  increment: (index: number) => {
+    updateGlobalState((draft) => {
+      draft.counters[index]++;
+    });
+  },
+  decrement: (index: number) => {
+    updateGlobalState((draft) => {
+      draft.counters[index]--;
+    });
+  },
+  reset: () => {
+    updateGlobalState((draft) => {
+      draft.counters = [0, 0, 0];
+    });
+  },
+};
+```
+
+### Counter Component
+
+The `Counter` component is used to display and control each counter.
+
+```typescript
+// src/Counter.tsx
+
+import React from "react";
+import { useGlobalState, counterActions } from "./rxduxStore";
+
+interface CounterProps {
+  index: number;
+}
+
+const Counter: React.FC<CounterProps> = ({ index }) => {
+  const { counters } = useGlobalState("counters");
+
+  return (
+    <div className="counter">
+      <p>Counter {index + 1}: {counters[index]}</p>
+      <button onClick={() => counterActions.increment(index)}>Increment</button>
+      <button onClick={() => counterActions.decrement(index)}>Decrement</button>
+    </div>
+  );
+};
+
+export default Counter;
+```
+
+### App Component
+
+The `App` component includes multiple `Counter` components and a reset button.
+
+```typescript
+// src/App.tsx
+
+import React from "react";
+import Counter from "./Counter";
+import { counterActions } from "./rxduxStore";
+import "./App.css";
+
+const App: React.FC = () => {
+  return (
+    <div className="App">
+      <h1>Simple Counter App</h1>
+      <Counter index={0} />
+      <Counter index={1} />
+      <Counter index={2} />
+      <button onClick={counterActions.reset}>Reset All Counters</button>
+    </div>
+  );
+};
+
+export default App;
+```
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request for any changes.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+```
+
+Feel free to replace `"your-username"` in the GitHub URL with your actual GitHub username. This README provides a comprehensive guide for users to understand and get started with the Simple Counter App project.
