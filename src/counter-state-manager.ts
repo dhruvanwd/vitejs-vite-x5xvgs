@@ -14,23 +14,25 @@ export const {
 });
 
 // Define actions to manipulate the state
-export const counterActions = {
+ class CounterActions {
   // Action to increment a counter by its index
-  increment: (index: number) => {
+  increment = (index: number) => {
     updateGlobalState((draft) => {
       draft.counters[index]++;
     });
-  },
+  }
   // Action to decrement a counter by its index
-  decrement: (index: number) => {
+  decrement = (index: number) => {
     updateGlobalState((draft) => {
       draft.counters[index]--;
     });
-  },
+  }
   // Action to reset all counters to zero
-  reset: () => {
+  reset = () => {
     updateGlobalState((draft) => {
       draft.counters = [0, 0, 0];
     });
-  },
+  }
 };
+
+export const counterActions = new CounterActions();
