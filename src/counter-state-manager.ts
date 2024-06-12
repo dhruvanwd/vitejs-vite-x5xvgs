@@ -12,6 +12,7 @@ let initialState: ICounter = {
 }
 const LOCAL_STORAGE_KEY = "counter-state"
 
+// access data from localStorage
 const stringifiedState = localStorage.getItem(LOCAL_STORAGE_KEY);
 if (stringifiedState) {
   const state = JSON.parse(stringifiedState)
@@ -28,7 +29,8 @@ export const {
 // Define actions to manipulate the state
 class CounterActions {
   constructor() {
-    $globalState.subscribe((value:ICounter) => {
+// store data in localStorage
+$globalState.subscribe((value:ICounter) => {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(value))
     })
   }
